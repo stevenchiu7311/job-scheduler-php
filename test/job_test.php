@@ -12,35 +12,21 @@ $db = isset($redisConf['db']) ? $redisConf['db'] : 0;
 
 const VALID_INTENTS = ['morning', 'bye', 'imhome', 'night'];
 
-if ($argc > 1) {
-    list($SELF, $isJobSubmitter) = $argv;
-}
-
-$looper = Factory::create();
-if (!isset($isJobSubmitter)) {
-    if (strpos($_SERVER['OS'], 'Windows') === false) {
-        $process = new \React\ChildProcess\Process("php job_test.php true");
-        $process->start($this->looper);
-    } else {
-        init($redisConf, isset($isJobSubmitter)? $isJobSubmitter: true);
-    }
-}
 init($redisConf, isset($isJobSubmitter)? $isJobSubmitter: false);
 
 function init($redisConf, $isJobSubmitter = false)
 {
     global $db;
     try {
-        $redisConnect = getRedisConn($redisConf);
-        if ($isJobSubmitter == "true") {
-            testAddJob($redisConnect);
-        } else {
-            $scheduler = new JobScheduler(0, $redisConf['host'], $redisConf['port'], $db, 180, 10);
-            $scheduler->run(function ($key, $value, $way) {
-                $wayStr = $way == 0 ? 'polling' : 'notification';
-                echo "Job is ready: key: $key value: $value [$wayStr]\n";
-            });
-        }
+        $scheduler = new JobScheduler(0, $redisConf['host'], $redisConf['port'], $db, 180, 30);
+        testAddJob($redisConf);
+        $scheduler->getLooper()->addPeriodicTimer(20, function () use ($redisConf) {
+            testAddJob($redisConf);
+        });
+        $scheduler->run(function ($key, $value, $way) {
+            $wayStr = $way == 0 ? 'polling' : 'notification';
+            echo "Job is ready: key: $key value: $value [$wayStr]\n";
+        });
     } catch (\RedisException $exception) {
         echo "Exception:$exception\n";
         echo "Prepare to quit...\n";
@@ -52,8 +38,9 @@ function init($redisConf, $isJobSubmitter = false)
     }
 }
 
-function testAddJob($redis)
+function testAddJob($redisConf)
 {
+    $redis = getRedisConn($redisConf);
     echo "================AddJob================\n";
     $strJsonFileContents = file_get_contents(__DIR__.'/'."script.json");
     $array = json_decode($strJsonFileContents);
@@ -68,6 +55,7 @@ function testAddJob($redis)
             $manager->addJob($redis, json_encode($command), $timeDelay, "testId", $intent, 0, $commandNo);
         }
     }
+    $redis->close();
     echo "======================================\n";
 }
 

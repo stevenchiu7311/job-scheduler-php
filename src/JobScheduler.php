@@ -2,6 +2,7 @@
 
 namespace TimeWorker;
 
+include_once __DIR__.'/../vendor/autoload.php';
 include_once __DIR__ . '/RedisFactory.php';
 
 use React\EventLoop\Factory;
@@ -47,14 +48,20 @@ class JobScheduler
         $this->subPattern = '__keyspace@' . $db . '__:';
         $this->executableTime = $executableTime;
         $this->pollingInterval = $pollingInterval;
-        $this->forkChildCmd = "php -r \"include '" . __FILE__ . "'; business\ilife\JobScheduler::fork(1, '$host', $port, $db);\"";
+        $this->forkChildCmd = "php -r \"include '" . __FILE__ . "'; TimeWorker\JobScheduler::fork(1, '$host', $port, $db);\"";
+
+        $looper = Factory::create();
+        $this->looper = $looper;
+    }
+
+    public function getLooper()
+    {
+        return $this->looper;
     }
 
     public function run(callable $cb = null)
     {
         $this->cb = $cb;
-        $looper = Factory::create();
-        $this->looper = $looper;
 
         try {
             $redisConnect = getRedisConn($this->redisConf);
@@ -71,9 +78,9 @@ class JobScheduler
         }
 
         if ($this->apiIndex == 0) {
-            $this->performJobScheduler($redisConnect, $looper);
+            $this->performJobScheduler($redisConnect, $this->looper);
         } elseif ($this->apiIndex == 1) {
-            $this->monitorExpireKey($this->redisConf, $looper);
+            $this->monitorExpireKey($this->redisConf, $this->looper);
         } else {
             throw new Exception('Invalid api index');
         }
@@ -82,7 +89,7 @@ class JobScheduler
     public function runProcess($cmd)
     {
         $process = new \React\ChildProcess\Process($cmd);
-        if (strpos($_SERVER['OS'], 'Windows') === false) {
+        if (!isset($_SERVER['OS']) || strpos($_SERVER['OS'], 'Windows') === false) {
             $process->start($this->looper);
         }
     }
@@ -133,7 +140,7 @@ class JobScheduler
             $looper->stop();
         });
 
-        if (strpos($_SERVER['OS'], 'Windows') === false) {
+        if (!isset($_SERVER['OS']) || strpos($_SERVER['OS'], 'Windows') === false) {
             $process = new \React\ChildProcess\Process($this->forkChildCmd);
             $process->start($looper);
             $process->stdout->on('data', function ($data) use (&$redis, &$manager, &$looper) {
