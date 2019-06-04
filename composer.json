@@ -1,0 +1,23 @@
+{
+    "name": "steven8d/timeworker",
+    "authors": [
+        {
+            "name": "steven.chiu",
+            "email": "steven.chiu@ileopard.com"
+        }
+    ],
+    "require": {
+        "react/event-loop": "^1.1",
+        "react/child-process": "^0.6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TimeWorker\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TimeWorker\\": "test"
+        }
+    }
+}

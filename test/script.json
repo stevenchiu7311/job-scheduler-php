@@ -1,0 +1,91 @@
+{
+    "morning": {
+        "enabled": true,
+        "commands": [{
+            "type": 1,
+            "text": "播放 Maroon 5 的 Sunday Morning",
+            "input": "Maroon 5 的 Sunday Morning",
+            "duration": 5
+        }, {
+            "type": 5,
+            "text": "打開房間的燈",
+            "input": "打開房間的燈"
+        }, {
+            "type": 3,
+            "text": "今天天氣",
+            "input": "今天天氣"
+        }]
+    },
+    "bye": {
+        "enabled": true,
+        "commands": [{
+            "type": 5,
+            "text": "關掉房間的燈",
+            "input": "關掉房間的燈"
+        }, {
+            "type": 5,
+            "text": "關掉房間的電扇",
+            "input": "關掉房間的電扇"
+        }]
+    },
+    "imhome": {
+        "enabled": true,
+        "commands": [{
+            "type": 5,
+            "text": "打開房間的燈",
+            "input": "打開房間的燈"
+        }, {
+            "type": 5,
+            "text": "打開房間的電扇",
+            "input": "打開房間的電扇"
+        }, {
+            "type": 1,
+            "text": "播放華語流行音樂",
+            "input": "華語流行音樂",
+            "duration": 120
+        }]
+    },
+    "night": {
+        "enabled": true,
+        "commands": [{
+            "type": 5,
+            "text": "關閉房間的燈",
+            "input": "關閉房間的燈"
+        }, {
+            "type": 1,
+            "text": "播放舒眠音樂",
+            "input": "舒眠音樂",
+            "duration": 120
+        }]
+    },
+    "__examples__": [{
+        "type": 1,
+        "text": "播放 Maroon 5 的 Sunday Morning",
+        "input": "Maroon 5 的 Sunday Morning",
+        "duration": 24
+    }, {
+        "type": 2,
+        "text": "播放 ICRT",
+        "input": "ICRT",
+        "duration": 180
+    }, {
+        "type": 3,
+        "text": "今天天氣",
+        "input": "今天天氣"
+    }, {
+        "type": 4,
+        "text": "播報頭條新聞",
+        "input": "頭條新聞",
+        "duration": 6
+    }, {
+        "type": 5,
+        "text": "打開房間的燈",
+        "input": "打開房間的燈"
+    }, {
+        "type": 6,
+        "text": "告訴我金牛座本週運勢",
+        "input": "告訴我金牛座本週運勢",
+        "mute": false,
+        "duration": 6
+    }]
+}
