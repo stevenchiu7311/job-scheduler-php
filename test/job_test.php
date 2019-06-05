@@ -18,7 +18,7 @@ function init($redisConf, $isJobSubmitter = false)
 {
     global $db;
     try {
-        $scheduler = new JobScheduler(0, $redisConf['host'], $redisConf['port'], $db, 180, 30);
+        $scheduler = new JobScheduler(0, $redisConf['host'], $redisConf['port'], $db, 180, 30, __DIR__."/../vendor/autoload.php");
         testAddJob($redisConf);
         $scheduler->getLooper()->addPeriodicTimer(20, function () use ($redisConf) {
             testAddJob($redisConf);

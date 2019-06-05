@@ -2,9 +2,6 @@
 
 namespace TimeWorker;
 
-include_once __DIR__.'/../vendor/autoload.php';
-include_once __DIR__ . '/RedisFactory.php';
-
 use React\EventLoop\Factory;
 
 class JobScheduler
@@ -38,7 +35,8 @@ class JobScheduler
         $port = 6379,
         $db = 0,
         $executableTime = self::EXECUTABLE_TIME,
-        $pollingInterval = self::POLLING_INTERVAL
+        $pollingInterval = self::POLLING_INTERVAL,
+        $autoloadPath = __DIR__."/../../../../vendor/autoload.php"
     ) {
         $this->redisConf['host'] = $host;
         $this->redisConf['port'] = $port;
@@ -48,7 +46,7 @@ class JobScheduler
         $this->subPattern = '__keyspace@' . $db . '__:';
         $this->executableTime = $executableTime;
         $this->pollingInterval = $pollingInterval;
-        $this->forkChildCmd = "php -r \"include '" . __FILE__ . "'; TimeWorker\JobScheduler::fork(1, '$host', $port, $db);\"";
+        $this->forkChildCmd = "php -r \"include_once '$autoloadPath'; include '".__DIR__."/RedisFactory.php'; use TimeWorker\JobScheduler; TimeWorker\JobScheduler::fork(1, '$host', $port, $db);\"";
 
         $looper = Factory::create();
         $this->looper = $looper;
