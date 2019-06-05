@@ -68,7 +68,7 @@ class JobScheduler
             echo "Prepare to quit...\n";
 
             return;
-        } catch (wxception\CacheException $exception) {
+        } catch (CacheException $exception) {
             echo "Exception:$exception\n";
             echo "Prepare to quit...\n";
 
@@ -120,7 +120,7 @@ class JobScheduler
                 $this->keyEventMonitor($redisConnectPub);
             } catch (\RedisException $exception) {
                 echo "Exception:$exception\n";
-            } catch (TimeWork\CacheException $exception) {
+            } catch (CacheException $exception) {
                 echo "Exception:$exception\n";
             }
         }
