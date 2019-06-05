@@ -1,9 +1,9 @@
 <?php
 include __DIR__.'/../vendor/autoload.php';
-include __DIR__.'/../src/RedisFactory.php';
 
 use TimeWorker\JobManager;
 use TimeWorker\JobScheduler;
+use TimeWorker\RedisFactory;
 use React\EventLoop\Factory;
 
 $redisConf['host'] = '127.0.0.1';
@@ -31,7 +31,7 @@ function init($redisConf, $isJobSubmitter = false)
         echo "Exception:$exception\n";
         echo "Prepare to quit...\n";
         return;
-    } catch (wxception\CacheException $exception) {
+    } catch (TimeWorker\CacheException $exception) {
         echo "Exception:$exception\n";
         echo "Prepare to quit...\n";
         return;
@@ -40,7 +40,7 @@ function init($redisConf, $isJobSubmitter = false)
 
 function testAddJob($redisConf)
 {
-    $redis = getRedisConn($redisConf);
+    $redis = TimeWorker\RedisFactory::getRedisConn($redisConf);
     echo "================AddJob================\n";
     $strJsonFileContents = file_get_contents(__DIR__.'/'."script.json");
     $array = json_decode($strJsonFileContents);

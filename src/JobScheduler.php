@@ -46,7 +46,7 @@ class JobScheduler
         $this->subPattern = '__keyspace@' . $db . '__:';
         $this->executableTime = $executableTime;
         $this->pollingInterval = $pollingInterval;
-        $this->forkChildCmd = "php -r \"include_once '$autoloadPath'; include '".__DIR__."/RedisFactory.php'; use TimeWorker\JobScheduler; TimeWorker\JobScheduler::fork(1, '$host', $port, $db);\"";
+        $this->forkChildCmd = "php -r \"include_once '$autoloadPath'; use TimeWorker\JobScheduler; TimeWorker\JobScheduler::fork(1, '$host', $port, $db);\"";
 
         $looper = Factory::create();
         $this->looper = $looper;
@@ -62,7 +62,7 @@ class JobScheduler
         $this->cb = $cb;
 
         try {
-            $redisConnect = getRedisConn($this->redisConf);
+            $redisConnect = RedisFactory::getRedisConn($this->redisConf);
         } catch (\RedisException $exception) {
             echo "Exception:$exception\n";
             echo "Prepare to quit...\n";
@@ -116,11 +116,11 @@ class JobScheduler
         while ($rebirth-- > 0) {
             try {
                 echo 'Redis subscription task PID[' . getmypid() . "]\n";
-                $redisConnectPub = getRedisConn($redisConf);
+                $redisConnectPub = RedisFactory::getRedisConn($redisConf);
                 $this->keyEventMonitor($redisConnectPub);
             } catch (\RedisException $exception) {
                 echo "Exception:$exception\n";
-            } catch (wxception\CacheException $exception) {
+            } catch (TimeWork\CacheException $exception) {
                 echo "Exception:$exception\n";
             }
         }
