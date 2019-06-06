@@ -86,8 +86,8 @@ class JobScheduler
 
     public function runProcess($cmd)
     {
-        $process = new \React\ChildProcess\Process($cmd);
         if (!isset($_SERVER['OS']) || strpos($_SERVER['OS'], 'Windows') === false) {
+            $process = new \React\ChildProcess\Process($cmd);
             $process->start($this->looper);
         }
     }
