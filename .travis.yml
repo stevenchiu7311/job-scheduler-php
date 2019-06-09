@@ -8,8 +8,13 @@ dist: trusty
 
 before_install:
   - phpenv config-rm xdebug.ini
+
 before_script:
+  - docker-compose -f devops/docker-compose.yml up -d
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+services:
+  - docker
 
 install:
   - composer install
