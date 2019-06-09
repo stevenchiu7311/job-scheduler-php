@@ -5,6 +5,7 @@ namespace TimeWorker;
 class CacheException extends \Exception
 {
     const REDIS_CONFIG_ERROR = "redis connection error...";
+    const REDIS_CONTENT_FAIL = "redis content fail";
 }
 
 class RedisFactory
