@@ -133,6 +133,7 @@ class JobScheduler
     {
         echo 'InitJobScheduler PID[' . getmypid() . "]\n";
         $manager = new JobManager($looper, $this->pollingInterval);
+        $executableTime = $this->executableTime;
         $looper->addTimer($this->executableTime, function () use (&$looper, &$executableTime) {
             echo "Force finishing scheduler after $executableTime second execution.\n";
             $looper->stop();
