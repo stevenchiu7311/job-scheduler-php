@@ -1,9 +1,8 @@
 <?php
+namespace TimeWorker;
+
 include __DIR__.'/../vendor/autoload.php';
 
-use TimeWorker\JobManager;
-use TimeWorker\JobScheduler;
-use TimeWorker\RedisFactory;
 use React\EventLoop\Factory;
 
 final class SchedulerTest extends \PHPUnit\Framework\TestCase
@@ -14,7 +13,7 @@ final class SchedulerTest extends \PHPUnit\Framework\TestCase
         $redisConf['host'] = '127.0.0.1';
         $redisConf['port'] = '6379';
         $db = isset($redisConf['db']) ? $redisConf['db'] : 0;
-        $redis = TimeWorker\RedisFactory::getRedisConn($redisConf);
+        $redis = RedisFactory::getRedisConn($redisConf);
         $manager = new JobManager();
         try {
             $result = [];
@@ -45,7 +44,7 @@ final class SchedulerTest extends \PHPUnit\Framework\TestCase
 
     public function addJob($redisConf, &$result)
     {
-        $redis = TimeWorker\RedisFactory::getRedisConn($redisConf);
+        $redis = RedisFactory::getRedisConn($redisConf);
         $manager = new JobManager();
         foreach ($result as $id => $delay) {
             $manager->addJob($redis, "Content of $id", $delay, $id);
