@@ -8,7 +8,8 @@ dist: trusty
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - before_script: echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_script:
+  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
   - composer install
