@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - 7.2
+
+# lock distro so new future defaults will not break the build
+dist: trusty
+
+install:
+  - composer install
+
+script:
+  - ./vendor/bin/phpunit -c phpunit.xml
