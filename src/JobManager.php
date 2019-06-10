@@ -62,26 +62,32 @@ class JobManager
 
     public function run($redis, callable $cb)
     {
+        $this->check($redis, $cb);
         $timer = $this->looper->addPeriodicTimer($this->pollingInterval, function () use (&$redis, $cb) {
-            $ts = time();
-            try {
-                $candidates = $redis->zRangeByScore(self::JOB_KEY, 0, $ts, array('withscores' => true));
-                if ($candidates) {
-                    foreach ($candidates as $key => $candidate) {
-                        $command = $this->removeJobByScheduleKey($redis, $key);
-                        $cb($key, $command, 0);
-                    }
-                }
-                if (sizeof($candidates) > 0) {
-                    print_r($candidates);
-                }
-            } catch (\RedisException $exception) {
-                echo "Exception:$exception\n";
-                echo "Quit looper...\n";
-                $this->looper->stop();
-            }
+            $this->check($redis, $cb);
         });
 
         $this->looper->run();
+    }
+
+    private function check(&$redis, callable $cb)
+    {
+        $ts = time();
+        try {
+            $candidates = $redis->zRangeByScore(self::JOB_KEY, 0, $ts, array('withscores' => true));
+            if ($candidates) {
+                foreach ($candidates as $key => $candidate) {
+                    $command = $this->removeJobByScheduleKey($redis, $key);
+                    $cb($key, $command, 0);
+                }
+            }
+            if (sizeof($candidates) > 0) {
+                print_r($candidates);
+            }
+        } catch (\RedisException $exception) {
+            echo "Exception:$exception\n";
+            echo "Quit looper...\n";
+            $this->looper->stop();
+        }
     }
 }
