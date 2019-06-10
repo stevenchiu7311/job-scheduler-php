@@ -20,4 +20,5 @@ install:
   - composer install
 
 script:
+  - docker-compose exec redis redis-cli config set notify-keyspace-events K$x
   - ./vendor/bin/phpunit -c phpunit.xml
