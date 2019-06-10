@@ -168,8 +168,9 @@ class JobScheduler
             $ipcBundle = json_decode($item, true);
             if (isset($ipcBundle[self::BUNDLE_KEY_PAYLOAD])) {
                 $key = $ipcBundle[self::BUNDLE_KEY_PAYLOAD];
-                $command = $manager->removeJobByScheduleKey($redis, $key);
-                call_user_func($this->cb, $key, $command, 1);
+                $content = $manager->removeJobByScheduleKey($redis, $key);
+                $retKey = preg_replace('/^'.self::SCHEDULE_KEY_PREFIX.'/', '', $key);
+                call_user_func($this->cb, explode(JobManager::KEY_DELIMETER, $retKey), $content, 1);
             }
         }
     }
