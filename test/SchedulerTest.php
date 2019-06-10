@@ -22,9 +22,9 @@ final class SchedulerTest extends \PHPUnit\Framework\TestCase
             }
             $scheduler = new JobScheduler(0, $redisConf['host'], $redisConf['port'], $db, 15, 15, __DIR__."/../vendor/autoload.php");
             self::addJob($redisConf, $result);
-            $scheduler->run(function ($keyArray, $value, $way) use ($result) {
+            $scheduler->run(function ($attrs, $value, $way) use ($result) {
                 $wayStr = $way == 0 ? 'polling' : 'notification';
-                $id = str_replace(JobManager::SCHEDULE_KEY_PREFIX, '', $key);
+                $id = join(':', $attrs);
                 $diff = time() - $result[$id];
                 if (self::DEBUG) {
                     echo "current: ".time()." expected: $result[$id] Diff time: $diff\n";

@@ -23,9 +23,9 @@ function init($redisConf, $isJobSubmitter = false)
         $scheduler->getLooper()->addPeriodicTimer(20, function () use ($redisConf) {
             testAddJob($redisConf);
         });
-        $scheduler->run(function ($keyArray, $value, $way) {
+        $scheduler->run(function ($attrs, $value, $way) {
             $wayStr = $way == 0 ? 'polling' : 'notification';
-            echo "Job is ready: key: ".json_encode($keyArray)." value: $value [$wayStr]\n";
+            echo "Job is ready: key: ".json_encode($attrs)." value: $value [$wayStr]\n";
         });
     } catch (\RedisException $exception) {
         echo "Exception:$exception\n";
